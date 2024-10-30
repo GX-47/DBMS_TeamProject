@@ -1,0 +1,46 @@
+airline_management/
+│
+├── static/                     # Store static files (CSS, JS, images)
+│   ├── css/
+│   │   └── style.css          # Custom styling
+│   ├── js/
+│   │   └── main.js            # Client-side JavaScript
+│   └── images/                # Store logos and other images
+│
+├── templates/                  # HTML templates
+│   ├── base.html              # Base template with common elements
+│   ├── auth/
+│   │   ├── login.html         # User login page
+│   │   └── register.html      # User registration page
+│   ├── dashboard/
+│   │   └── dashboard.html     # Main dashboard after login
+│   ├── flights/
+│   │   ├── list.html         # List all flights
+│   │   ├── add.html          # Add new flight
+│   │   └── edit.html         # Edit flight details
+│   └── bookings/
+│       ├── list.html         # List all bookings
+│       ├── create.html       # Create new booking
+│       └── edit.html         # Edit booking details
+│
+├── models/                    # Database models
+│   ├── __init__.py
+│   ├── user.py               # User model
+│   ├── flight.py             # Flight model
+│   └── booking.py            # Booking model
+│
+├── routes/                    # Route handlers
+│   ├── __init__.py
+│   ├── auth.py               # Authentication routes
+│   ├── flights.py            # Flight management routes
+│   └── bookings.py           # Booking management routes
+│
+├── utils/                     # Utility functions
+│   ├── __init__.py
+│   ├── db.py                 # Database connection utilities
+│   └── auth.py               # Authentication helpers
+│
+├── config.py                 # Configuration settings
+├── requirements.txt          # Project dependencies
+├── app.py                    # Main application file
+└── schema.sql               # MySQL database schema

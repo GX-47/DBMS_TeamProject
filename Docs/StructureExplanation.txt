@@ -1,0 +1,29 @@
+Main Application Components:
+    app.py: Entry point of the application
+    config.py: Configuration settings (database credentials, secret key)
+    schema.sql: MySQL database structure
+
+Templates Directory:
+    Organized by feature (auth, flights, bookings)
+    Uses template inheritance with base.html
+    Separate sections for different CRUD operations
+
+Static Files:
+    CSS for styling the GUI
+    JavaScript for interactive features
+    Images for logos and UI elements
+
+Models:
+    Separate files for each main entity
+    Handles database interactions
+    Implements data validation
+
+Routes:
+    Modular organization by feature
+    Implements CRUD operations
+    Handles form processing and validation
+
+Utils:
+    Reusable database functions
+    Authentication helpers
+    Common utility functions
