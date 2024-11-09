@@ -1,0 +1,43 @@
+Passengers Table:
+Primary Key: Passenger_ID
+Attributes: Passenger_ID, Name, Age, Gender, Password
+
+Crew Table:
+Primary Key: Crew_ID
+Attributes: Crew_ID, Name, Salary, Years_of_Service
+
+Captain Table:
+Primary Key: Captain_ID
+Attributes: Captain_ID, Crew_ID
+
+Flights Table:
+Primary Key: Flight_ID
+Attributes: Flight_ID, Capacity, Model, Source, Destination, Departure, Arrival
+
+Bookings Table:
+Primary Key: Booking_ID
+Attributes: Booking_ID, Passenger_ID, Flight_ID, Seat_no, Seat_type
+
+Food Table:
+Primary Key: Item_ID
+Attributes: Item_ID, Item_name, Cost, Stock
+
+Buys Table:
+Primary Key: Passenger_ID, Item_ID
+Attributes: Passenger_ID, Item_ID
+
+Serves Table:
+Primary Key: Crew_ID, Item_ID
+Attributes: Crew_ID, Item_ID
+
+Luggage Table:
+Primary Key: Luggage_ID
+Attributes: Luggage_ID, Passenger_ID, Type
+
+Works_at Table:
+Primary Key: Crew_ID, Flight_ID
+Attributes: Crew_ID, Flight_ID
+
+Staff_login Table:
+Primary Key: Staff_id
+Attributes: Staff_id, Role, Password

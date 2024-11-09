@@ -13,6 +13,7 @@ CREATE TABLE Passengers (
   Name VARCHAR(100),
   Age INT,
   Gender VARCHAR(10)
+  Password VARCHAR(50)
 );
 
 CREATE TABLE Crew (
@@ -86,6 +87,12 @@ CREATE TABLE Works_at (
   FOREIGN KEY (Flight_ID) REFERENCES Flights(Flight_ID)
 );
 
+-- Simple table for staff login
+CREATE TABLE Staff_Login (
+    Staff_ID INT PRIMARY KEY,
+    Role VARCHAR(50),  -- 'admin', 'operations', 'analyst', 'checkin'
+    Password VARCHAR(50)
+);
 
 -- Insert data
 INSERT INTO Passengers (Passenger_ID, Name, Age, Gender) VALUES

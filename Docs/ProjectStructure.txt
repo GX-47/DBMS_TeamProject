@@ -40,8 +40,7 @@ airline_management_system/
 │   │   - show_login_page()
 │   │   - handle_logout()
 │   │
-│   ├── customer/
-│   │   └── customer_dashboard.py
+│   ├── customer_dashboard.py
 │   │       - show_flight_booking_section()
 │   │           • Display available flights
 │   │           • Book flights
@@ -52,30 +51,26 @@ airline_management_system/
 │   │           • View flight bookings
 │   │           • View food orders
 │   │
-│   ├── admin/
-│   │   └── admin_dashboard.py
+│   ├── admin_dashboard.py
 │   │       - show_user_management()
 │   │           • Create staff accounts
 │   │           • View all users
 │   │       - show_system_data()
 │   │           • View all tables
 │   │
-│   ├── operations/
-│   │   └── operations_dashboard.py
+│   ├── operations_dashboard.py
 │   │       - show_flight_management()
 │   │           • Add/modify/delete flights
 │   │       - show_crew_management()
 │   │           • Add/modify crew
 │   │           • Assign crew to flights
 │   │
-│   ├── analyst/
-│   │   └── analyst_dashboard.py
+│   ├── analyst_dashboard.py
 │   │       - show_flight_data()
 │   │       - show_passenger_data()
 │   │       - show_food_data()
 │   │
-│   └── checkin/
-│       └── checkin_dashboard.py
+│   └── checkin_dashboard.py
 │           - show_passenger_search()
 │           - show_luggage_registration()
 │
