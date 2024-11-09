@@ -134,3 +134,51 @@ INSERT INTO Works_at (Crew_ID, Flight_ID) VALUES
 (1, 1),
 (2, 1),
 (3, 2);
+
+
+-- Stored Procedure to add a new passenger
+DELIMITER //
+
+CREATE PROCEDURE AddPassenger (
+  IN p_Passenger_ID INT,
+  IN p_Name VARCHAR(100),
+  IN p_Age INT,
+  IN p_Gender VARCHAR(10)
+)
+BEGIN
+  INSERT INTO Passengers (Passenger_ID, Name, Age, Gender)
+  VALUES (p_Passenger_ID, p_Name, p_Age, p_Gender);
+END //
+
+DELIMITER ;
+
+
+-- Function to calculate the total cost of items bought by a passenger
+DELIMITER //
+
+CREATE FUNCTION TotalCostOfItemsBought(p_Passenger_ID INT) RETURNS DECIMAL(10, 2)
+BEGIN
+  DECLARE total_cost DECIMAL(10, 2);
+  SELECT SUM(Food.Cost) INTO total_cost
+  FROM Buys
+  JOIN Food ON Buys.Item_ID = Food.Item_ID
+  WHERE Buys.Passenger_ID = p_Passenger_ID;
+  RETURN total_cost;
+END //
+
+DELIMITER ;
+
+
+-- Trigger to update the stock of food items when a purchase is made
+DELIMITER //
+
+CREATE TRIGGER UpdateFoodStock
+AFTER INSERT ON Buys
+FOR EACH ROW
+BEGIN
+  UPDATE Food
+  SET Stock = Stock - 1
+  WHERE Item_ID = NEW.Item_ID;
+END //
+
+DELIMITER ;
