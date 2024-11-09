@@ -1,39 +1,108 @@
-Passengers Table:
-Primary Key: Passenger_ID
-Attributes: Passenger_ID, Name, Age, Gender
+airline_management_system/
+│
+├── config/
+│   └── database.py          # Database connection and queries
+│       - establish_connection()
+│       - execute_query(query, params)
+│
+├── models/
+│   ├── user.py             
+│   │   - validate_customer_login(passenger_id, password)
+│   │   - validate_staff_login(staff_id, password)
+│   │   - register_customer(name, age, gender, password)
+│   │
+│   ├── flight.py           
+│   │   - get_all_flights()
+│   │   - add_flight(details)
+│   │   - modify_flight(flight_id, details)
+│   │   - delete_flight(flight_id)
+│   │
+│   ├── booking.py          
+│   │   - create_booking(passenger_id, flight_id)
+│   │   - get_bookings(passenger_id)
+│   │
+│   ├── crew.py            
+│   │   - get_all_crew()
+│   │   - add_crew(details)
+│   │   - modify_crew(crew_id, details)
+│   │   - assign_crew(crew_id, flight_id)
+│   │
+│   ├── food.py            
+│   │   - get_food_items()
+│   │   - order_food(passenger_id, item_id)
+│   │   - get_orders(passenger_id)
+│   │
+│   └── luggage.py         
+│       - register_luggage(passenger_id, type)
+│
+├── pages/
+│   ├── login.py            # Login page for all users
+│   │   - show_login_page()
+│   │   - handle_logout()
+│   │
+│   ├── customer/
+│   │   └── customer_dashboard.py
+│   │       - show_flight_booking_section()
+│   │           • Display available flights
+│   │           • Book flights
+│   │       - show_food_ordering_section()
+│   │           • Display food menu
+│   │           • Order food
+│   │       - show_booking_history()
+│   │           • View flight bookings
+│   │           • View food orders
+│   │
+│   ├── admin/
+│   │   └── admin_dashboard.py
+│   │       - show_user_management()
+│   │           • Create staff accounts
+│   │           • View all users
+│   │       - show_system_data()
+│   │           • View all tables
+│   │
+│   ├── operations/
+│   │   └── operations_dashboard.py
+│   │       - show_flight_management()
+│   │           • Add/modify/delete flights
+│   │       - show_crew_management()
+│   │           • Add/modify crew
+│   │           • Assign crew to flights
+│   │
+│   ├── analyst/
+│   │   └── analyst_dashboard.py
+│   │       - show_flight_data()
+│   │       - show_passenger_data()
+│   │       - show_food_data()
+│   │
+│   └── checkin/
+│       └── checkin_dashboard.py
+│           - show_passenger_search()
+│           - show_luggage_registration()
+│
+└── main.py                # Main application file
 
-Crew Table:
-Primary Key: Crew_ID
-Attributes: Crew_ID, Name, Salary, Years_of_Service
+Interface Navigation Structure:
+1. Login Page (Default)
+   └── Redirects to respective dashboard based on role
 
-Captain Table:
-Primary Key: Captain_ID
-Attributes: Captain_ID, Crew_ID
+2. Customer Dashboard
+   ├── Book Flight
+   ├── Order Food
+   └── View History
 
-Flights Table:
-Primary Key: Flight_ID
-Attributes: Flight_ID, Capacity, Model, Source, Destination, Departure, Arrival
+3. Admin Dashboard
+   ├── User Management
+   └── View System Data
 
-Bookings Table:
-Primary Key: Booking_ID
-Attributes: Booking_ID, Passenger_ID, Flight_ID, Seat_no, Seat_type
+4. Operations Dashboard
+   ├── Flight Management
+   └── Crew Management
 
-Food Table:
-Primary Key: Item_ID
-Attributes: Item_ID, Item_name, Cost, Stock
+5. Analyst Dashboard
+   ├── Flight Data
+   ├── Passenger Data
+   └── Food Sales Data
 
-Buys Table:
-Primary Key: Passenger_ID, Item_ID
-Attributes: Passenger_ID, Item_ID
-
-Serves Table:
-Primary Key: Crew_ID, Item_ID
-Attributes: Crew_ID, Item_ID
-
-Luggage Table:
-Primary Key: Luggage_ID
-Attributes: Luggage_ID, Passenger_ID, Type
-
-Works_at Table:
-Primary Key: Crew_ID, Flight_ID
-Attributes: Crew_ID, Flight_ID
+6. Check-in Dashboard
+   ├── Search Passenger
+   └── Register Luggage
