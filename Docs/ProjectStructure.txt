@@ -78,8 +78,9 @@ airline_management_system/
 
 Interface Navigation Structure:
 1. Login Page (Default)
-   └── Redirects to respective dashboard based on role
-
+   ├── Redirects to respective dashboard based on role
+   └── Allows creation of customer
+   
 2. Customer Dashboard
    ├── Book Flight
    ├── Order Food
