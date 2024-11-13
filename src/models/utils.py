@@ -1,4 +1,6 @@
 import streamlit as st
+from config.database import connect_to_database
+from mysql.connector import Error
 
 def print_boarding_pass(booking_details):
     if len(booking_details) < 5:
@@ -12,13 +14,20 @@ def print_boarding_pass(booking_details):
     st.write(f"**Arrival:** {booking_details[4]}")
 
 def get_food_menu():
-    return [
-        (1, "Sandwich", 150),
-        (2, "Burger", 200),
-        (3, "Pasta", 250),
-        (4, "Salad", 100),
-        (5, "Juice", 50)
-    ]
+    try:
+        db = connect_to_database()
+        if db is None:
+            return []
+        cursor = db.cursor()
+        cursor.execute("SELECT food_id, food_name, price FROM food_menu")
+        food_menu = cursor.fetchall()
+        return food_menu
+    except Error as e:
+        st.error(f"Error: {e}")
+        return []
+    finally:
+        if db:
+            db.close()
 
 def handle_print_ticket():
     st.header("Print Boarding Pass")
