@@ -1,38 +1,20 @@
 import mysql.connector
 from mysql.connector import Error
+import streamlit as st
+from dotenv import load_dotenv
+import os
 
-# Database credentials
-DB_HOST = "localhost"
-DB_USER = "root"
-DB_PASSWORD = "admin@123"
-DB_NAME = "airline_management"
+load_dotenv()
 
-def establish_connection():
-    """Establish a database connection."""
+def connect_to_database():
     try:
-        conn = mysql.connector.connect(
-            host=DB_HOST,
-            user=DB_USER,
-            password=DB_PASSWORD,
-            database=DB_NAME
+        db = mysql.connector.connect(
+            host=os.getenv("DB_HOST"),
+            user=os.getenv("DB_USER"),
+            passwd=os.getenv("DB_PASSWORD"),
+            database=os.getenv("DB_NAME")
         )
-        if conn.is_connected():
-            return conn
+        return db
     except Error as e:
-        print(f"Error: {e}")
-    return None
-
-def execute_query(query, params=()):
-    """Execute a query on the database."""
-    conn = establish_connection()
-    if conn is not None:
-        try:
-            cursor = conn.cursor()
-            cursor.execute(query, params)
-            conn.commit()
-            return cursor.fetchall()
-        except Error as e:
-            print(f"Error: {e}")
-        finally:
-            conn.close()
-    return None
+        st.error(f"Error: {e}")
+        return None

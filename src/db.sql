@@ -1,191 +1,186 @@
--- File to create the database schema
+CREATE DATABASE IF NOT EXISTS `airline_system`;
 
--- Initial setup
-DROP DATABASE IF EXISTS 'airline_management';
-CREATE DATABASE 'airline_management';
+USE `airline_system`;
 
-USE 'airline_management';
-
-
--- Create tables
-CREATE TABLE Passengers (
-  Passenger_ID INT PRIMARY KEY,
-  Name VARCHAR(100),
-  Age INT,
-  Gender VARCHAR(10)
-  Password VARCHAR(50)
+CREATE TABLE `passenger` (
+  `passenger_id` VARCHAR(10) NOT NULL,
+  `phone` VARCHAR(15) NOT NULL,
+  `name` VARCHAR(50) NOT NULL,
+  `email` VARCHAR(50) NOT NULL check (email like '%@%'),
+  `password` VARCHAR(50) NOT NULL,
+  PRIMARY KEY (`passenger_id`)
 );
 
-CREATE TABLE Crew (
-  Crew_ID INT PRIMARY KEY,
-  Name VARCHAR(100),
-  Salary DECIMAL(10, 2),
-  Years_of_Service INT
+CREATE TABLE `airline` (
+  `airline_id` VARCHAR(10) NOT NULL,
+  `airline_name` VARCHAR(50) NOT NULL,
+  `hub_location` VARCHAR(50) NOT NULL,
+  `rating` DECIMAL(2,1) NOT NULL,
+  `password` VARCHAR(50) NOT NULL,
+  PRIMARY KEY (`airline_id`)
 );
 
-CREATE TABLE Captain (
-  Captain_ID INT PRIMARY KEY,
-  Crew_ID INT,
-  FOREIGN KEY (Crew_ID) REFERENCES Crew(Crew_ID)
+CREATE TABLE `flight` (
+  `flight_id` VARCHAR(10) NOT NULL,
+  `airline_id` VARCHAR(10) NOT NULL,
+  `origin` VARCHAR(50) NOT NULL,
+  `destination` VARCHAR(50) NOT NULL,
+  `departure_time` DATETIME NOT NULL,
+  `arrival_time` DATETIME NOT NULL,
+  `capacity` INT NOT NULL,
+  `price` DECIMAL(8,2) NOT NULL,
+  PRIMARY KEY (`flight_id`),
+  FOREIGN KEY (`airline_id`) REFERENCES `airline`(`airline_id`) ON DELETE CASCADE
 );
 
-CREATE TABLE Flights (
-  Flight_ID INT PRIMARY KEY,
-  Capacity INT,
-  Model VARCHAR(50),
-  Source VARCHAR(50),
-  Destination VARCHAR(50),
-  Departure DATETIME,
-  Arrival DATETIME
+CREATE TABLE `booking` (
+  `booking_id` VARCHAR(10) NOT NULL,
+  `passenger_id` VARCHAR(10) NOT NULL,
+  `flight_id` VARCHAR(10) NOT NULL,
+  `booking_date` DATE NOT NULL,
+  `total_price` DECIMAL(8,2) NOT NULL,
+  `status` VARCHAR(20) NOT NULL,
+  `airline_id` VARCHAR(10) NOT NULL,
+  PRIMARY KEY (`booking_id`),
+  FOREIGN KEY (`passenger_id`) REFERENCES `passenger`(`passenger_id`) ON DELETE CASCADE,
+  FOREIGN KEY (`flight_id`) REFERENCES `flight`(`flight_id`) ON DELETE CASCADE,
+  FOREIGN KEY (`airline_id`) REFERENCES `airline`(`airline_id`) ON DELETE CASCADE
 );
 
-CREATE TABLE Bookings (
-  Booking_ID INT PRIMARY KEY,
-  Passenger_ID INT,
-  Flight_ID INT,
-  Seat_no VARCHAR(10),
-  Seat_type VARCHAR(20),
-  FOREIGN KEY (Passenger_ID) REFERENCES Passengers(Passenger_ID),
-  FOREIGN KEY (Flight_ID) REFERENCES Flights(Flight_ID)
+CREATE TABLE `passenger_details` (
+  `detail_id` VARCHAR(20) NOT NULL,
+  `booking_id` VARCHAR(10) NOT NULL,
+  `passenger_name` VARCHAR(50) NOT NULL,
+  `seat_number` VARCHAR(10) NOT NULL,
+  `meal_preference` VARCHAR(20),
+  PRIMARY KEY (`detail_id`),
+  FOREIGN KEY (`booking_id`) REFERENCES `booking`(`booking_id`) ON DELETE CASCADE
 );
 
-CREATE TABLE Food (
-  Item_ID INT PRIMARY KEY,
-  Item_name VARCHAR(100),
-  Cost DECIMAL(10, 2),
-  Stock INT
+CREATE TABLE `frontdesk_staff` (
+  `staff_id` VARCHAR(10) NOT NULL,
+  `name` VARCHAR(50) NOT NULL,
+  `email` VARCHAR(50) NOT NULL,
+  `password` VARCHAR(50) NOT NULL,
+  PRIMARY KEY (`staff_id`)
 );
 
-CREATE TABLE Buys (
-  Passenger_ID INT,
-  Item_ID INT,
-  PRIMARY KEY (Passenger_ID, Item_ID),
-  FOREIGN KEY (Passenger_ID) REFERENCES Passengers(Passenger_ID),
-  FOREIGN KEY (Item_ID) REFERENCES Food(Item_ID)
+CREATE TABLE `analyst_staff` (
+  `staff_id` VARCHAR(10) NOT NULL,
+  `name` VARCHAR(50) NOT NULL,
+  `email` VARCHAR(50) NOT NULL,
+  `password` VARCHAR(50) NOT NULL,
+  PRIMARY KEY (`staff_id`)
 );
 
-CREATE TABLE Serves (
-  Crew_ID INT,
-  Item_ID INT,
-  PRIMARY KEY (Crew_ID, Item_ID),
-  FOREIGN KEY (Crew_ID) REFERENCES Crew(Crew_ID),
-  FOREIGN KEY (Item_ID) REFERENCES Food(Item_ID)
+CREATE TABLE `luggage` (
+  `luggage_id` VARCHAR(10) NOT NULL,
+  `booking_id` VARCHAR(10) NOT NULL,
+  `weight` DECIMAL(5,2) NOT NULL,
+  `category` VARCHAR(20) NOT NULL,
+  `handling_instructions` VARCHAR(100),
+  `check_in_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `staff_id` VARCHAR(10) NOT NULL,
+  PRIMARY KEY (`luggage_id`),
+  FOREIGN KEY (`booking_id`) REFERENCES `booking`(`booking_id`) ON DELETE CASCADE,
+  FOREIGN KEY (`staff_id`) REFERENCES `frontdesk_staff`(`staff_id`) ON DELETE CASCADE
 );
 
-CREATE TABLE Luggage (
-  Luggage_ID INT PRIMARY KEY,
-  Passenger_ID INT,
-  Type VARCHAR(50),
-  FOREIGN KEY (Passenger_ID) REFERENCES Passengers(Passenger_ID)
+CREATE TABLE `food_menu` (
+  `food_id` VARCHAR(10) NOT NULL,
+  `food_name` VARCHAR(50) NOT NULL,
+  `price` DECIMAL(5,2) NOT NULL,
+  PRIMARY KEY (`food_id`)
 );
 
-CREATE TABLE Works_at (
-  Crew_ID INT,
-  Flight_ID INT,
-  PRIMARY KEY (Crew_ID, Flight_ID),
-  FOREIGN KEY (Crew_ID) REFERENCES Crew(Crew_ID),
-  FOREIGN KEY (Flight_ID) REFERENCES Flights(Flight_ID)
+CREATE TABLE `booking_food` (
+  `booking_id` VARCHAR(10) NOT NULL,
+  `food_id` VARCHAR(10) NOT NULL,
+  `quantity` INT NOT NULL,
+  PRIMARY KEY (`booking_id`, `food_id`),
+  FOREIGN KEY (`booking_id`) REFERENCES `booking`(`booking_id`) ON DELETE CASCADE,
+  FOREIGN KEY (`food_id`) REFERENCES `food_menu`(`food_id`) ON DELETE CASCADE
 );
 
--- Simple table for staff login
-CREATE TABLE Staff_Login (
-    Staff_ID INT PRIMARY KEY,
-    Role VARCHAR(50),  -- 'admin', 'operations', 'analyst', 'checkin'
-    Password VARCHAR(50)
+CREATE TABLE `admin` (
+  `admin_id` VARCHAR(10) NOT NULL,
+  `name` VARCHAR(50) NOT NULL,
+  `password` VARCHAR(50) NOT NULL,
+  PRIMARY KEY (`admin_id`)
 );
 
--- Insert data
-INSERT INTO Passengers (Passenger_ID, Name, Age, Gender) VALUES
-(1, 'John Doe', 30, 'Male'),
-(2, 'Jane Smith', 25, 'Female'),
-(3, 'Alice Johnson', 28, 'Female');
-
-INSERT INTO Crew (Crew_ID, Name, Salary, Years_of_Service) VALUES
-(1, 'Michael Brown', 50000, 5),
-(2, 'Sarah Davis', 55000, 7),
-(3, 'David Wilson', 60000, 10);
-
-INSERT INTO Captain (Captain_ID, Crew_ID) VALUES
-(1, 3);
-
-INSERT INTO Flights (Flight_ID, Capacity, Model, Source, Destination, Departure, Arrival) VALUES
-(1, 180, 'Boeing 737', 'New York', 'Los Angeles', '2023-10-01 08:00:00', '2023-10-01 11:00:00'),
-(2, 220, 'Airbus A320', 'Chicago', 'Miami', '2023-10-02 09:00:00', '2023-10-02 12:00:00');
-
-INSERT INTO Bookings (Booking_ID, Passenger_ID, Flight_ID, Seat_no, Seat_type) VALUES
-(1, 1, 1, '12A', 'Economy'),
-(2, 2, 1, '12B', 'Economy'),
-(3, 3, 2, '14C', 'Economy');
-
-INSERT INTO Food (Item_ID, Item_name, Cost, Stock) VALUES
-(1, 'Sandwich', 5.00, 50),
-(2, 'Coffee', 3.00, 100),
-(3, 'Juice', 4.00, 80);
-
-INSERT INTO Buys (Passenger_ID, Item_ID) VALUES
-(1, 1),
-(2, 2),
-(3, 3);
-
-INSERT INTO Serves (Crew_ID, Item_ID) VALUES
-(1, 1),
-(2, 2),
-(3, 3);
-
-INSERT INTO Luggage (Luggage_ID, Passenger_ID, Type) VALUES
-(1, 1, 'Checked'),
-(2, 2, 'Carry-on'),
-(3, 3, 'Checked');
-
-INSERT INTO Works_at (Crew_ID, Flight_ID) VALUES
-(1, 1),
-(2, 1),
-(3, 2);
-
-
--- Stored Procedure to add a new passenger
+-- Stored procedure to confirm booking
 DELIMITER //
-
-CREATE PROCEDURE AddPassenger (
-  IN p_Passenger_ID INT,
-  IN p_Name VARCHAR(100),
-  IN p_Age INT,
-  IN p_Gender VARCHAR(10)
-)
+CREATE PROCEDURE ConfirmBooking(IN passengerId VARCHAR(10))
 BEGIN
-  INSERT INTO Passengers (Passenger_ID, Name, Age, Gender)
-  VALUES (p_Passenger_ID, p_Name, p_Age, p_Gender);
+    UPDATE `booking` SET 
+        status = 'Confirmed'
+    WHERE passenger_id = passengerId AND status = 'Pending';
 END //
-
 DELIMITER ;
 
-
--- Function to calculate the total cost of items bought by a passenger
+-- Function to calculate total price with taxes
 DELIMITER //
-
-CREATE FUNCTION TotalCostOfItemsBought(p_Passenger_ID INT) RETURNS DECIMAL(10, 2)
+CREATE FUNCTION CalculateTotalPrice(base_price DECIMAL(8,2)) 
+RETURNS DECIMAL(8,2) READS SQL DATA
 BEGIN
-  DECLARE total_cost DECIMAL(10, 2);
-  SELECT SUM(Food.Cost) INTO total_cost
-  FROM Buys
-  JOIN Food ON Buys.Item_ID = Food.Item_ID
-  WHERE Buys.Passenger_ID = p_Passenger_ID;
-  RETURN total_cost;
+    DECLARE total DECIMAL(8,2);
+    -- Adding 18% tax
+    SET total = base_price * 1.18;
+    RETURN total;
 END //
-
 DELIMITER ;
 
+-- Sample data
+INSERT INTO `admin` VALUES 
+('AD1', 'Admin', 'admin123');
 
--- Trigger to update the stock of food items when a purchase is made
-DELIMITER //
+INSERT INTO `passenger` VALUES 
+('P_1', '9876543210', 'Akash', 'a@a.com', 'admin@123'),
+('P_2', '8765432109', 'Bob Brown', 'bob@example.com', 'bob123'),
+('P_3', '7654321098', 'Charlie Davis', 'charlie@example.com', 'charlie123');
 
-CREATE TRIGGER UpdateFoodStock
-AFTER INSERT ON Buys
-FOR EACH ROW
-BEGIN
-  UPDATE Food
-  SET Stock = Stock - 1
-  WHERE Item_ID = NEW.Item_ID;
-END //
+INSERT INTO `airline` VALUES 
+('AL1', 'Air India', 'Delhi', 4.2, 'airindia123'),
+('AL2', 'IndiGo', 'Mumbai', 4.5, 'indigo123'),
+('AL3', 'SpiceJet', 'Bangalore', 4.0, 'spice123');
 
-DELIMITER ;
+INSERT INTO `frontdesk_staff` VALUES 
+('FD1', 'John Doe', 'john@airline.com', 'front123'),
+('FD2', 'Jane Smith', 'jane@airline.com', 'desk123');
+
+INSERT INTO `analyst_staff` VALUES 
+('AN1', 'Alice Johnson', 'alice@airline.com', 'analyst123'),
+('AN2', 'Bob Williams', 'bob@airline.com', 'analysis456');
+
+INSERT INTO `flight` VALUES
+('FL1', 'AL1', 'Delhi', 'Mumbai', '2024-11-14 10:00:00', '2024-11-14 12:00:00', 180, 5000.00),
+('FL2', 'AL1', 'Mumbai', 'Bangalore', '2024-11-14 14:00:00', '2024-11-14 16:00:00', 180, 4500.00),
+('FL3', 'AL2', 'Bangalore', 'Delhi', '2024-11-14 18:00:00', '2024-11-14 20:30:00', 160, 6000.00);
+
+INSERT INTO `food_menu` VALUES 
+('F1', 'Veg Meal', 300.00),
+('F2', 'Non-Veg Meal', 350.00),
+('F3', 'Snacks', 150.00),
+('F4', 'Beverages', 100.00);
+
+INSERT INTO `booking` VALUES
+('B1', 'P_1', 'FL1', '2024-11-01', 5000.00, 'Confirmed', 'AL1'),
+('B2', 'P_2', 'FL2', '2024-11-02', 4500.00, 'Pending', 'AL1'),
+('B3', 'P_3', 'FL3', '2024-11-03', 6000.00, 'Confirmed', 'AL2');
+
+INSERT INTO `passenger_details` VALUES
+('D1', 'B1', 'Akash', '12A', 'Veg'),
+('D2', 'B2', 'Bob Brown', '14B', 'Non-Veg'),
+('D3', 'B3', 'Charlie Davis', '16C', 'Veg');
+
+INSERT INTO `luggage` VALUES
+('L1', 'B1', 15.00, 'Checked', 'Handle with care', '2024-11-14 08:00:00', 'FD1'),
+('L2', 'B2', 20.00, 'Checked', 'Fragile', '2024-11-14 12:00:00', 'FD2'),
+('L3', 'B3', 10.00, 'Carry-on', NULL, '2024-11-14 16:00:00', 'FD1');
+
+INSERT INTO `booking_food` VALUES
+('B1', 'F1', 1),
+('B2', 'F2', 2),
+('B3', 'F3', 3);
+
