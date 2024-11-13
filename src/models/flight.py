@@ -144,18 +144,15 @@ def get_booking_details(booking_id):
         db = connect_to_database()
         cursor = db.cursor()
         query = """
-        SELECT b.booking_id, p.name, f.flight_id, a.airline_name, 
-               f.origin, f.destination, f.departure_time, pd.passenger_name,
-               pd.seat_number, pd.meal_preference, b.status
+        SELECT p.name, f.flight_id, pd.seat_number, f.departure_time, f.arrival_time
         FROM booking b
         JOIN passenger p ON b.passenger_id = p.passenger_id
         JOIN flight f ON b.flight_id = f.flight_id
-        JOIN airline a ON b.airline_id = a.airline_id
         JOIN passenger_details pd ON b.booking_id = pd.booking_id
         WHERE b.booking_id = %s AND b.status = 'Confirmed'
         """
         cursor.execute(query, (booking_id,))
-        return cursor.fetchall()
+        return cursor.fetchone()
     except Error as e:
         st.error(f"Error: {e}")
     finally:
