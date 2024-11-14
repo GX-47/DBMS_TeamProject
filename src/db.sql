@@ -149,10 +149,6 @@ INSERT INTO `frontdesk_staff` VALUES
 ('FD1', 'John Doe', 'john@airline.com', 'front123'),
 ('FD2', 'Jane Smith', 'jane@airline.com', 'desk123');
 
-INSERT INTO `analyst_staff` VALUES 
-('AN1', 'Alice Johnson', 'alice@airline.com', 'analyst123'),
-('AN2', 'Bob Williams', 'bob@airline.com', 'analysis456');
-
 INSERT INTO `flight` VALUES
 ('FL1', 'AL1', 'Delhi', 'Mumbai', '2024-11-14 10:00:00', '2024-11-14 12:00:00', 180, 5000.00),
 ('FL2', 'AL1', 'Mumbai', 'Bangalore', '2024-11-14 14:00:00', '2024-11-14 16:00:00', 180, 4500.00),
