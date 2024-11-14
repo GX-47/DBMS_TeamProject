@@ -2,6 +2,7 @@ import streamlit as st
 from models.flight import get_available_flights, add_flight, update_flight, view_bookings
 from datetime import datetime
 from config.database import connect_to_database
+from mysql.connector import Error
 
 def handle_add_flight():
     st.header("Add New Flight")
