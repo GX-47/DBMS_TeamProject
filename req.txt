@@ -1,0 +1,6 @@
+Nested Query: Shows flights priced above average with percentage difference
+Join Query: Comprehensive booking view with all related details in one query
+Aggregate Query: Airline performance dashboard with metrics
+Procedure: Automatically updates flight status (Delayed/On Time/Departed)
+Function: Calculates dynamic pricing based on booking date
+Trigger: Automatically updates flight capacity after booking
