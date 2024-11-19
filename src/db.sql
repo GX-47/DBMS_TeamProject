@@ -182,6 +182,81 @@ INSERT INTO `booking_food` VALUES
 ('B2', 'F2', 2),
 ('B3', 'F3', 3);
 
+DECLARE @adminuser VARCHAR(255);
+DECLARE user_cursor CURSOR FOR
+SELECT name FROM admin;
+
+OPEN user_cursor;
+FETCH NEXT FROM user_cursor INTO @adminuser;
+
+WHILE @@FETCH_STATUS = 0
+BEGIN
+    -- Construct and execute the GRANT statement
+    EXEC('GRANT ALL PRIVILEGES ON airline TO ' + @adminuser);
+    EXEC('GRANT ALL PRIVILEGES ON food_menu TO ' + @adminuser);
+
+    FETCH NEXT FROM user_cursor INTO @adminuser;
+END;
+
+CLOSE user_cursor;
+DEALLOCATE user_cursor;
+
+DECLARE @passuser VARCHAR(255);
+DECLARE user_cursor CURSOR FOR
+SELECT email FROM passenger;
+
+OPEN user_cursor;
+FETCH NEXT FROM user_cursor INTO @passuser;
+
+WHILE @@FETCH_STATUS = 0
+BEGIN
+    -- Construct and execute the GRANT statement
+    EXEC('GRANT ALL PRIVILEGES ON passenger_details TO ' + @passuser);
+    EXEC('GRANT ALL PRIVILEGES ON booking_food TO ' + @adminuser);
+
+    FETCH NEXT FROM user_cursor INTO @passuser;
+END;
+
+CLOSE user_cursor;
+DEALLOCATE user_cursor;
+
+DECLARE @airstaffuser VARCHAR(255);
+DECLARE user_cursor CURSOR FOR
+SELECT airline_id FROM airline;
+
+OPEN user_cursor;
+FETCH NEXT FROM user_cursor INTO @airstaffuser;
+
+WHILE @@FETCH_STATUS = 0
+BEGIN
+    -- Construct and execute the GRANT statement
+    EXEC('GRANT ALL PRIVILEGES ON flight TO ' + @airstaffuser);
+
+    FETCH NEXT FROM user_cursor INTO @airstaffuser;
+END;
+
+CLOSE user_cursor;
+DEALLOCATE user_cursor;
+
+DECLARE @frontstaffuser VARCHAR(255);
+DECLARE user_cursor CURSOR FOR
+SELECT name FROM frontdesk_staff;
+
+OPEN user_cursor;
+FETCH NEXT FROM user_cursor INTO @frontstaffuser;
+
+WHILE @@FETCH_STATUS = 0
+BEGIN
+    -- Construct and execute the GRANT statement
+    EXEC('GRANT ALL PRIVILEGES ON passenger_details TO ' + @frontstaffuser);
+    EXEC('GRANT ALL PRIVILEGES ON luggage TO ' + @frontstaffuser);
+
+    FETCH NEXT FROM user_cursor INTO @frontstaffuser;
+END;
+
+CLOSE user_cursor;
+DEALLOCATE user_cursor;
+
 -- 1. Nested Query: Get flights with higher than average price
 CREATE VIEW expensive_flights AS
 SELECT f.*, a.airline_name, 
