@@ -109,8 +109,7 @@ def view_bookings(user_id, user_type):
         if db:
             db.close()
 
-def add_flight(airline_id, origin, destination, departure_time, arrival_time, 
-               capacity, price):
+def add_flight(airline_id, origin, destination, departure_time, arrival_time, capacity, price):
     try:
         db = connect_to_database()
         cursor = db.cursor()
@@ -126,6 +125,12 @@ def add_flight(airline_id, origin, destination, departure_time, arrival_time,
         cursor.execute(query, (flight_id, airline_id, origin, destination, departure_time, arrival_time, capacity, price))
         db.commit()
         st.success("Flight added successfully!")
+        discounted_price = cursor.execute("""
+            SELECT CalculateDiscountedPrice(%s, CURDATE(), %s)
+        """, (price, departure_datetime))
+        
+        # Add status tracking
+        cursor.execute("CALL UpdateFlightDelays()")
     except Error as e:
         st.error(f"Error: {e}")
     finally:

@@ -86,3 +86,46 @@ def handle_view_flight_bookings():
                             db.close()
             
             st.markdown("---")
+
+def handle_airline_dashboard():
+    st.header("Airline Dashboard")
+    
+    try:
+        db = connect_to_database()
+        cursor = db.cursor()
+
+        # Display Airline Metrics (Aggregate Query)
+        cursor.execute("""
+            SELECT * FROM airline_metrics 
+            WHERE airline_id = %s
+        """, (st.session_state.user_id,))
+        metrics = cursor.fetchone()
+        
+        if metrics:
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                st.metric("Total Flights", metrics[2])
+            with col2:
+                st.metric("Total Bookings", metrics[3])
+            with col3:
+                st.metric("Average Bookings/Flight", f"{metrics[6] / 100}")
+            
+            st.metric("Total Revenue", f"₹{metrics[5]:,.2f}")
+        
+        # Display Premium Flights (Nested Query)
+        st.subheader("Premium Flights")
+        cursor.execute("SELECT * FROM expensive_flights WHERE airline_id = %s", 
+                      (st.session_state.user_id,))
+        premium_flights = cursor.fetchall()
+        
+        if premium_flights:
+            for flight in premium_flights:
+                st.write(f"""
+                Flight {flight[0]}: {flight[2]} to {flight[3]}
+                Price: ₹{flight[7]:,.2f} ({flight[-1]} above average)
+                """)
+        else:
+            st.write("No premium flights available.")
+    finally:
+        if db:
+            db.close()

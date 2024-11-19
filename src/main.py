@@ -25,7 +25,7 @@ import streamlit as st
 from users.sidebar import display_sidebar_menu
 from users.login import handle_login, handle_signup
 from users.passenger import handle_book_flight, handle_view_bookings
-from users.airline import handle_add_flight, handle_edit_flight, handle_view_flight_bookings
+from users.airline import handle_airline_dashboard, handle_add_flight, handle_edit_flight, handle_view_flight_bookings
 from users.frontdesk import handle_print_ticket, handle_register_luggage
 from users.admin import handle_user_management
 from users.utils import initialize_session_state, handle_rerun, handle_logout
@@ -45,6 +45,8 @@ def main():
             handle_book_flight()
         elif menu_option == "View My Bookings" and st.session_state.user_type == "passenger":
             handle_view_bookings()
+        elif menu_option == "Dashboard" and st.session_state.user_type == "airline":
+            handle_airline_dashboard()
         elif menu_option == "Add Flight" and st.session_state.user_type == "airline":
             handle_add_flight()
         elif menu_option == "Edit Flight" and st.session_state.user_type == "airline":

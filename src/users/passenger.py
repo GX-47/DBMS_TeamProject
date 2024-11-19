@@ -1,4 +1,5 @@
 import streamlit as st
+from config.database import connect_to_database
 from models.flight import get_available_flights, book_flight, view_bookings
 from models.utils import get_food_menu
 
@@ -56,3 +57,38 @@ def handle_view_bookings():
             Status: {booking[7]}
             """)
             st.markdown("---")
+
+def handle_view_bookings():
+    st.header("My Bookings")
+    try:
+        db = connect_to_database()
+        cursor = db.cursor()
+        
+        # Use the comprehensive booking view (Join Query)
+        cursor.execute("""
+            SELECT * FROM booking_full_details 
+            WHERE passenger_name = (
+                SELECT name FROM passenger WHERE passenger_id = %s
+            )
+        """, (st.session_state.user_id,))
+        
+        bookings = cursor.fetchall()
+        
+        if bookings:
+            for booking in bookings:
+                with st.expander(f"Booking {booking[0]} - {booking[3]}"):
+                    st.write(f"""
+                    **Flight Details**
+                    - Route: {booking[4]} to {booking[5]}
+                    - Departure: {booking[6]}
+                    - Seat: {booking[7]}
+                    - Meal: {booking[8]}
+                    
+                    **Food Orders**: {booking[9] if booking[9] else 'None'}
+                    
+                    **Total Price**: ₹{booking[10]:,.2f}
+                    **Status**: {booking[11]}
+                    """)
+    finally:
+        if db:
+            db.close()
