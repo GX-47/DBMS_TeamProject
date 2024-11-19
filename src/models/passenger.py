@@ -10,7 +10,10 @@ def signup_passenger(name, phone, email, password):
         passenger_count = cursor.fetchone()[0] + 1
         passenger_id = f"P_{passenger_count}"
         
-        query = "INSERT INTO passenger (passenger_id, phone, name, email, password) VALUES (%s, %s, %s, %s, %s)"
+        query = """
+        INSERT INTO passenger (passenger_id, phone, name, email, password)
+        VALUES (%s, %s, %s, %s, %s)
+        """
         cursor.execute(query, (passenger_id, phone, name, email, password))
         db.commit()
 

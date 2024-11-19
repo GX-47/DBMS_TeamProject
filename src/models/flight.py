@@ -41,8 +41,7 @@ def book_flight(passenger_id, flight_id, airline_id, passenger_details, food_ord
 
         # Create booking
         booking_query = """
-        INSERT INTO booking (booking_id, passenger_id, flight_id, booking_date, 
-                           total_price, status, airline_id)
+        INSERT INTO booking (booking_id, passenger_id, flight_id, booking_date, total_price, status, airline_id)
         VALUES (%s, %s, %s, CURDATE(), %s, 'Pending', %s)
         """
         
@@ -50,15 +49,13 @@ def book_flight(passenger_id, flight_id, airline_id, passenger_details, food_ord
         booking_count = cursor.fetchone()[0] + 1
         booking_id = f"B_{booking_count}"
         
-        cursor.execute(booking_query, (booking_id, passenger_id, flight_id, 
-                                     total_price, airline_id))
+        cursor.execute(booking_query, (booking_id, passenger_id, flight_id, total_price, airline_id))
 
         # Add passenger details
         for idx, (name, seat, meal) in enumerate(passenger_details):
             detail_id = f"D_{booking_id}_{idx+1}"
             detail_query = """
-            INSERT INTO passenger_details (detail_id, booking_id, passenger_name, 
-                                        seat_number, meal_preference)
+            INSERT INTO passenger_details (detail_id, booking_id, passenger_name, seat_number, meal_preference)
             VALUES (%s, %s, %s, %s, %s)
             """
             cursor.execute(detail_query, (detail_id, booking_id, name, seat, meal))
@@ -87,8 +84,7 @@ def view_bookings(user_id, user_type):
 
         if user_type == "passenger":
             query = """
-            SELECT b.booking_id, f.flight_id, a.airline_name, f.origin, f.destination,
-                   f.departure_time, b.total_price, b.status
+            SELECT b.booking_id, f.flight_id, a.airline_name, f.origin, f.destination, f.departure_time, b.total_price, b.status
             FROM booking b
             JOIN flight f ON b.flight_id = f.flight_id
             JOIN airline a ON b.airline_id = a.airline_id
@@ -97,8 +93,7 @@ def view_bookings(user_id, user_type):
             cursor.execute(query, (user_id,))
         else:  # airline
             query = """
-            SELECT b.booking_id, b.passenger_id, p.name, f.flight_id,
-                   f.origin, f.destination, f.departure_time, b.status
+            SELECT b.booking_id, b.passenger_id, p.name, f.flight_id, f.origin, f.destination, f.departure_time, b.status
             FROM booking b
             JOIN flight f ON b.flight_id = f.flight_id
             JOIN passenger p ON b.passenger_id = p.passenger_id
@@ -125,12 +120,10 @@ def add_flight(airline_id, origin, destination, departure_time, arrival_time,
         flight_id = f"FL_{flight_count}"
 
         query = """
-        INSERT INTO flight (flight_id, airline_id, origin, destination, 
-                          departure_time, arrival_time, capacity, price)
+        INSERT INTO flight (flight_id, airline_id, origin, destination, departure_time, arrival_time, capacity, price)
         VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
         """
-        cursor.execute(query, (flight_id, airline_id, origin, destination,
-                             departure_time, arrival_time, capacity, price))
+        cursor.execute(query, (flight_id, airline_id, origin, destination, departure_time, arrival_time, capacity, price))
         db.commit()
         st.success("Flight added successfully!")
     except Error as e:
@@ -166,8 +159,7 @@ def update_flight(flight_id, origin, destination, departure_time, arrival_time, 
 
         query = """
         UPDATE flight
-        SET origin = %s, destination = %s, departure_time = %s, arrival_time = %s, 
-            capacity = %s, price = %s
+        SET origin = %s, destination = %s, departure_time = %s, arrival_time = %s, capacity = %s, price = %s
         WHERE flight_id = %s
         """
         cursor.execute(query, (origin, destination, departure_time, arrival_time, capacity, price, flight_id))

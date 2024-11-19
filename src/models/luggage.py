@@ -6,7 +6,10 @@ def register_luggage(booking_id, weight, category, handling_instructions, user_i
     try:
         db = connect_to_database()
         cursor = db.cursor()
-        query = "INSERT INTO luggage (booking_id, weight, category, handling_instructions, registered_by) VALUES (%s, %s, %s, %s, %s)"
+        query = """
+        INSERT INTO luggage (booking_id, weight, category, handling_instructions, registered_by)
+        VALUES (%s, %s, %s, %s, %s)
+        """
         cursor.execute(query, (booking_id, weight, category, handling_instructions, user_id))
         luggage_id = cursor.lastrowid
         db.commit()
