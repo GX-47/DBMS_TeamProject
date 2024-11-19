@@ -287,3 +287,29 @@ DELIMITER ;
 
 -- Add status column to flight table
 ALTER TABLE flight ADD COLUMN status VARCHAR(20) DEFAULT 'On Time';
+
+create user 'Akash'@'localhost' identified by 'admin@123';
+create user 'Bob'@'localhost' identified by 'bob123';
+create user 'Charlie'@'localhost' identified by 'charlie123';
+
+create user 'AL1'@'localhost' identified by 'airindia123';
+create user 'AL2'@'localhost' identified by 'indigo123';
+create user 'AL3'@'localhost' identified by 'spice123';
+
+create user 'John Doe'@'localhost' identified by 'front123';
+create user 'Jane Smith'@'localhost' identified by 'desk123';
+
+GRANT ALL PRIVILEGES ON database_name.* TO 'admin'@'localhost';
+
+GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER ON airline_system.flight TO 'AL1'@'localhost';
+GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER ON airline_system.flight TO 'AL2'@'localhost';
+GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER ON airline_system.flight TO 'AL2'@'localhost';
+
+GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER ON airline_system.passenger_details TO 'Akash'@'localhost';
+GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER ON airline_system.passenger_details TO 'Bob'@'localhost';
+GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER ON airline_system.passenger_details TO 'Charlie'@'localhost';
+
+GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER ON airline_system.luggage TO 'John Doe'@'localhost';
+GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER ON airline_system.luggage TO 'Jane Smith'@'localhost';
+
+FLUSH privileges
