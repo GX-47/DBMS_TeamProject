@@ -1,7 +1,9 @@
 import streamlit as st
 from config.database import connect_to_database
-from models.flight import get_available_flights, book_flight, view_bookings
+from models.flight import get_available_flights, book_flight, view_bookings, calculate_flight_price
 from models.utils import get_food_menu
+from datetime import datetime
+from decimal import Decimal
 
 def handle_book_flight():
     st.header("Book Flight")
@@ -15,6 +17,22 @@ def handle_book_flight():
         if selected_flight:
             flight_id = selected_flight.split('-')[0].strip()
             selected_flight_data = next(f for f in flights if f[0] == flight_id)
+            
+            base_price = Decimal(str(selected_flight_data[7]))  # Convert to Decimal using string
+            booking_date = datetime.now().date()
+            flight_date = selected_flight_data[4]
+
+            final_price = calculate_flight_price(base_price, booking_date, flight_date)
+
+            # Display pricing information
+            st.write(f"Base Price: ₹{base_price:,.2f}")
+            st.write(f"Final Price: ₹{final_price:,.2f}")
+
+            if final_price < base_price:
+                st.success(f"Early bird discount applied! Save ₹{base_price - final_price:,.2f}")
+            elif final_price > base_price:
+                st.warning(f"Last-minute booking fee applied: ₹{final_price - base_price:,.2f}")
+
             
             num_passengers = st.number_input("Number of Passengers", 1, 5, 1)
             passenger_details = []

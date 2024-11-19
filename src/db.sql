@@ -258,7 +258,7 @@ BEGIN
     
     SET days_until_flight = DATEDIFF(flight_date, booking_date);
     
-    IF days_until_flight > 30 THEN
+    IF days_until_flight > 10 THEN
         SET final_price = base_price * 0.9; -- 10% early bird discount
     ELSEIF days_until_flight < 2 THEN
         SET final_price = base_price * 1.2; -- 20% last minute markup

@@ -125,9 +125,6 @@ def add_flight(airline_id, origin, destination, departure_time, arrival_time, ca
         cursor.execute(query, (flight_id, airline_id, origin, destination, departure_time, arrival_time, capacity, price))
         db.commit()
         st.success("Flight added successfully!")
-        discounted_price = cursor.execute("""
-            SELECT CalculateDiscountedPrice(%s, CURDATE(), %s)
-        """, (price, departure_datetime))
         
         # Add status tracking
         cursor.execute("CALL UpdateFlightDelays()")
@@ -172,6 +169,25 @@ def update_flight(flight_id, origin, destination, departure_time, arrival_time, 
         st.success("Flight updated successfully!")
     except Error as e:
         st.error(f"Error: {e}")
+    finally:
+        if db:
+            db.close()
+            
+def calculate_flight_price(base_price, booking_date, flight_date):
+    """Calculate the final price with dynamic discounts"""
+    try:
+        db = connect_to_database()
+        cursor = db.cursor()
+        
+        cursor.execute("""
+            SELECT CalculateDiscountedPrice(%s, %s, %s)
+        """, (base_price, booking_date, flight_date))
+        
+        discounted_price = cursor.fetchone()[0]
+        return discounted_price
+    except Error as e:
+        st.error(f"Error calculating price: {e}")
+        return base_price
     finally:
         if db:
             db.close()

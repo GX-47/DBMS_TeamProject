@@ -126,6 +126,54 @@ def handle_airline_dashboard():
                 """)
         else:
             st.write("No premium flights available.")
+        
+        # Get flight status summary
+        cursor.execute("""
+            SELECT status, COUNT(*) 
+            FROM flight 
+            WHERE airline_id = %s 
+            GROUP BY status
+        """, (st.session_state.user_id,))
+        
+        status_summary = cursor.fetchall()
+        
+        # Display status metrics
+        col1, col2, col3 = st.columns(3)
+        for status, count in status_summary:
+            if status == 'On Time':
+                col1.markdown("<h2 style='text-align: center; color: #4CAF50; font-size: 24px;'><b>On Time Flights</b></h2>", unsafe_allow_html=True)
+                col1.metric("", count)
+            elif status == 'Delayed':
+                col2.metric("Delayed Flights", count)
+            elif status == 'Departed':
+                col3.metric("Departed Flights", count)
+                
+    finally:
+        if db:
+            db.close()
+
+def confirm_booking(booking_id, passenger_id):
+    """Confirm a pending booking"""
+    try:
+        db = connect_to_database()
+        cursor = db.cursor()
+        
+        # Call the stored procedure
+        cursor.callproc('ConfirmBooking', [passenger_id])
+        db.commit()
+        
+        # Check if booking was confirmed
+        cursor.execute("""
+            SELECT status 
+            FROM booking 
+            WHERE booking_id = %s
+        """, (booking_id,))
+        
+        status = cursor.fetchone()[0]
+        return status == 'Confirmed'
+    except Error as e:
+        st.error(f"Error confirming booking: {e}")
+        return False
     finally:
         if db:
             db.close()
